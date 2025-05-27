@@ -102,28 +102,6 @@
    event.preventDefault();
  }
 
-<!-- function send_data()-->
-<!--  {-->
-<!--    document.querySelector('form').addEventListener('submit',form_handler);-->
-
-<!--    var form_data = new  FormData(document.querySelector('form'));-->
-<!--    var xmr = new XMLHttpRequest({mozSystem: true});-->
-
-<!--    xmr.open('POST','/predict',true);-->
-<!--    document.getElementById("prediction").innerHTML="Wait! Predicting Price...";-->
-
-<!--    xmr.onreadystatechange=function()-->
-<!--    {-->
-<!--      if(xmr.readyState==XMLHttpRequest.DONE)-->
-<!--       {-->
-<!--          ducument.getElementById("prediction").innerHTML="Prediction: ₹" + xmr.responseText;-->
-<!--       }-->
-<!--    };-->
-
-<!--    xmr.onload=function(){}-->
-<!--    xmr.send(form_data);-->
-<!--  }-->
-
       function send_data()
     {
         document.querySelector('form').addEventListener("submit",form_handler);
