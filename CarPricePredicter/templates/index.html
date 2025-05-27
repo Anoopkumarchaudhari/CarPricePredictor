@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>car Price Predictor</title>
+      <link rel="stylesheet" href="static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+<!-- Font Awesome 6.5 CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-papD4HcUAGv3iIUIbNRtAhnLgHrH0qX7uVGo3qHwYX0iD9oD0mcfkXIfN1Zk4Q8aISSCs1sJHOZDJIlVeVUG6w=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  </head>
+  <body class ='bg-dark'>
+    <div class="container">
+      <div class="row">
+        <div class="card mt-50" style="width:100%;height:100%">
+          <div class="card-header">
+            <div class="col-12" style="text-align:center">
+              <h1>Car Price Predictor</h1>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <form method="post"  acccept-charset="utf-8">
+
+              <div class="col-10 form-group" style="text-align:center">
+                <label><b>Select Company</b></label>
+                <select class="selectpicker form-control" id="company_id" name="company" required="1" onchange="load_car_model(this.id, 'car_model_id')">
+                  {%for company in companies%}
+                  <option value="{{company}}">{{company}}</option>
+                  {%endfor%}
+                </select>
+              </div>
+
+              <div class="col-10 form-group" style="text-align:center">
+                <label><b>Select Model</b></label>
+                <select class="selectpicker form-control" id="car_model_id" name="model" required="1">
+
+                </select>
+              </div>
+
+              <div class="col-10 form-group" style="text-align:center">
+                <label><b>Select Year of  Purchase</b></label>
+                <select class="selectpicker form-control" id="year" name="year" required="1">
+                  {%for year in years%}
+                  <option value="{{year}}">{{year}}</option>
+                  {%endfor%}
+                </select>
+              </div>
+
+              <div class="col-10 form-group" style="text-align:center">
+                <label><b>Select Fuel-type</b></label>
+                <select class="selectpicker form-control" id="fuel_type" name="fueltype" required="1">
+                  {%for fueltype in fueltype%}
+                  <option value="{{fueltype}}">{{fueltype}}</option>
+                  {%endfor%}
+                </select>
+              </div>
+
+              <div class="col-10 form-group" style="text-align:center">
+                <label><b>Enter number of Kilometer travels</b></label>
+                <input class="form-control" type="text" id="killo_diven" name="kilo_driven" placeholder="Enter no. of kilometer travelleds">
+              </div>
+              <button class="btn btn-primary form-control" onclick="send_data()">Pridict Price</button>
+            </form>
+            <br>
+            <div calss="row">
+              <div class="col-12" style="test-align:center">
+                <h3 style="text-align:center"><span id="prediction"></span></h3>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+<script>
+  function load_car_model(company_id, car_model_id) {
+    var company = document.getElementById(company_id);
+    var car_model = document.getElementById(car_model_id);
+     car_model.value="";
+    car_model.innerHTML = "";
+
+    {% for company in companies %}
+      if (company.value == "{{ company }}") {
+        {% for model in car_model %}
+          {% if company in model %}
+            var newOption = document.createElement("option");
+            newOption.value = "{{ model }}";
+            newOption.innerHTML = "{{ model }}";
+            car_model.appendChild(newOption);
+          {%endif%}
+        {% endfor %}
+      }
+    {% endfor %}
+  }
+
+ function form_handler(event)
+ {
+   event.preventDefault();
+ }
+
+<!-- function send_data()-->
+<!--  {-->
+<!--    document.querySelector('form').addEventListener('submit',form_handler);-->
+
+<!--    var form_data = new  FormData(document.querySelector('form'));-->
+<!--    var xmr = new XMLHttpRequest({mozSystem: true});-->
+
+<!--    xmr.open('POST','/predict',true);-->
+<!--    document.getElementById("prediction").innerHTML="Wait! Predicting Price...";-->
+
+<!--    xmr.onreadystatechange=function()-->
+<!--    {-->
+<!--      if(xmr.readyState==XMLHttpRequest.DONE)-->
+<!--       {-->
+<!--          ducument.getElementById("prediction").innerHTML="Prediction: ₹" + xmr.responseText;-->
+<!--       }-->
+<!--    };-->
+
+<!--    xmr.onload=function(){}-->
+<!--    xmr.send(form_data);-->
+<!--  }-->
+
+      function send_data()
+    {
+        document.querySelector('form').addEventListener("submit",form_handler);
+
+        var fd=new FormData(document.querySelector('form'));
+
+        var xhr= new XMLHttpRequest({mozSystem: true});
+
+        xhr.open('POST','/predict',true);
+        document.getElementById('prediction').innerHTML="Wait! Predicting Price.....";
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                document.getElementById('prediction').innerHTML="Predicted price : ₹ "+xhr.responseText;
+
+            }
+        };
+
+        xhr.onload= function(){};
+
+        xhr.send(fd);
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<footer>
+  <p>© 2025 Car Price Predictor | Developed by <strong>Anoop Kumar</strong></p>
+
+</footer>
+
+  </body>
+</html>
